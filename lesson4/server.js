@@ -25,20 +25,31 @@ const sendRespones = (filename,statusCode,response) => {
 };
 
 const server = http.createServer((request,response)=>{
-  console.log(request.url, request.method);
+  // console.log(request.url, request.method);
   const method = request.method;
-  const url = request.url;
+  let url = request.url;
   if(method === "GET"){
     const requestUrl = new URL(url,`http://${ip}:${port}`);
     console.log(requestUrl);
-    console.log(requestUrl.searchParams.get("lang"));
+    // console.log(requestUrl.searchParams.get("lang"));
+    url = requestUrl.pathname
+    const lang = requestUrl.searchParams.get("lang")
+    let selector;
+
+    if(lang === null || lang === "en"){
+      selector = ""
+    }else if(lang === "zh"){
+      selector = "-zh"
+    }else{
+      selector = "";
+    }
 
     if(url === "/"){
-      sendRespones("index.html",200,response);
+      sendRespones(`index${selector}.html`,200,response);
     }else if (url === "/about.html"){
-      sendRespones("about.html",200,response);
+      sendRespones(`about${selector}.html`,200,response);
     }else{
-      sendRespones("404.html",404,response);
+      sendRespones(`404${selector}.html`,404,response);
     }
 
   }else{
